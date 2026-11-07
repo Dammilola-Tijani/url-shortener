@@ -141,3 +141,10 @@ test('behind a trusted proxy, rate limiting is per real client, not per proxy', 
     await c.close();
   }
 });
+
+test('root serves the landing page', async () => {
+  const res = await fetch(`${ctx.base}/`);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type'), /text\/html/);
+  assert.match(await res.text(), /URL Shortener/);
+});

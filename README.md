@@ -4,6 +4,8 @@ A small service that turns long URLs into short links, redirects visitors, and r
 
 Built with Node.js, Express, and SQLite (via Node's built-in `node:sqlite`). It's deliberately compact so the interesting parts like collision handling, safe redirects, and analytics queries are easy to follow.
 
+**Live demo:** https://url-shortener-njik.onrender.com (free tier: the first request after idle can take about a minute, and data may be reset)
+
 ## Quick start
 
 Requires Node.js 22.5+ (uses the built-in `node:sqlite` and test runner).
@@ -29,6 +31,7 @@ The repo includes a `render.yaml` blueprint. On Render: **New → Blueprint**, p
 
 | Method | Path                      | Description                                  |
 | ------ | ------------------------- | -------------------------------------------- |
+| GET    | `/`                       | Small demo page for trying it in a browser   |
 | POST   | `/api/links`              | Create a short link                          |
 | GET    | `/:code`                  | Redirect (302) to the target and record a click |
 | GET    | `/api/links/:code/stats`  | Click analytics for a link                   |

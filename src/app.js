@@ -1,6 +1,7 @@
 import express from 'express';
 import { generateCode as defaultGenerateCode, isValidCustomCode } from './codes.js';
 import { rateLimit } from './rateLimit.js';
+import { landingPage } from './page.js';
 
 const MAX_URL_LENGTH = 2048;
 const MAX_CODE_ATTEMPTS = 5;
@@ -51,6 +52,7 @@ export function createApp(db, options = {}) {
   app.use(express.json({ limit: '10kb' }));
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+  app.get('/', (_req, res) => res.type('html').send(landingPage));
 
   // ---- Create ---------------------------------------------------------------
   app.post('/api/links', rateLimit(createLimit), (req, res) => {
