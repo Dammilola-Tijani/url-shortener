@@ -24,6 +24,9 @@ export function createApp(db, options = {}) {
     baseUrl = '',
     generateCode = defaultGenerateCode,
     createLimit = { max: 30, windowMs: 60_000 },
+    // Number of reverse proxies in front of the app (0/false = none). Needed so
+    // req.ip is the real client, not the proxy, when deployed behind a host's load balancer.
+    trustProxy = false,
   } = options;
 
   const q = {
@@ -44,7 +47,7 @@ export function createApp(db, options = {}) {
   };
 
   const app = express();
-  app.set('trust proxy', false);
+  app.set('trust proxy', trustProxy);
   app.use(express.json({ limit: '10kb' }));
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));

@@ -124,3 +124,20 @@ test('rate limits link creation per client', async () => {
     await c.close();
   }
 });
+
+test('behind a trusted proxy, rate limiting is per real client, not per proxy', async () => {
+  const c = start({ trustProxy: 1, createLimit: { max: 1, windowMs: 60_000 } });
+  const asClient = (ip) =>
+    fetch(`${c.base}/api/links`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-forwarded-for': ip },
+      body: JSON.stringify({ url: 'https://example.com' }),
+    });
+  try {
+    assert.equal((await asClient('203.0.113.1')).status, 201);
+    assert.equal((await asClient('203.0.113.1')).status, 429); // same client: limited
+    assert.equal((await asClient('203.0.113.2')).status, 201); // different client: allowed
+  } finally {
+    await c.close();
+  }
+});

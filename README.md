@@ -19,6 +19,11 @@ npm test
 | `PORT`     | `3000`                  | HTTP port                                   |
 | `BASE_URL` | `http://localhost:PORT` | Prefix used when building `shortUrl`        |
 | `DB_FILE`  | `data.db`               | SQLite file path                            |
+| `TRUST_PROXY` | `0` (none)           | Number of reverse proxies in front of the app, so rate limiting sees the real client IP |
+
+## Deploying (Render)
+
+The repo includes a `render.yaml` blueprint. On Render: **New → Blueprint**, pick this repo, and deploy. It sets `TRUST_PROXY=1` (Render's load balancer is one proxy) and uses Render's `RENDER_EXTERNAL_URL` so short links point at the public address. The free tier sleeps when idle, so the first request after a pause can take about a minute.
 
 ## API
 
@@ -101,7 +106,8 @@ Link creation is rate limited per client IP (fixed window, `429` with a `Retry-A
 
 - **In-memory rate limiter:** it resets on restart and isn't shared between instances. A multi-instance deployment needs a shared store such as Redis.
 - **No authentication:** anyone can create a link, and anyone who knows a code can read its stats or delete it. A real service would tie links to accounts.
-- **`trust proxy` is off**, so behind a reverse proxy every request would share one IP for rate limiting. It must be configured for the deployment.
+- **`TRUST_PROXY` must match the deployment.** Behind a reverse proxy, every request would look like it came from the proxy's IP unless `TRUST_PROXY` is set to the number of proxies in front of the app (see Deploying). Set it too high and clients could spoof their IP via `X-Forwarded-For`.
+- **Demo data is not durable.** Free hosts wipe the SQLite file on restart or redeploy.
 - **No bot filtering:** crawlers and link previewers count as clicks.
 - **No unique-visitor counting** (this would need a privacy-conscious approach).
 - **No URL safety check** against known-malicious domains.

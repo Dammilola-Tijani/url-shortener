@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: url-shortener
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # One proxy (Render's load balancer) sits in front of the app.
+      - key: TRUST_PROXY
+        value: "1"
