@@ -2,7 +2,7 @@
 
 A small service that turns long URLs into short links, redirects visitors, and records click analytics (total clicks, clicks per day, top referrers).
 
-Built with Node.js, Express, and SQLite (via Node's built-in `node:sqlite`). It's deliberately compact so the interesting parts — collision handling, safe redirects, and analytics queries — are easy to follow.
+Built with Node.js, Express, and SQLite (via Node's built-in `node:sqlite`). It's deliberately compact so the interesting parts like collision handling, safe redirects, and analytics queries are easy to follow.
 
 ## Quick start
 
